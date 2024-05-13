@@ -35,3 +35,42 @@ export type HotItem = {
   /** 推荐类型 */
   type: string
 }
+
+interface GoodsItem {
+  desc: string
+  id: string
+  name: string
+  orderNum: number
+  picture: string
+  price: string
+}
+/** 通用分页结果类型 */
+export type PageResult<T> = {
+  /** 列表数据 */
+  items: T[]
+  /** 总条数 */
+  counts: number
+  /** 当前页数 */
+  page: number
+  /** 总页数 */
+  pages: number
+  /** 每页条数 */
+  pageSize: number
+}
+/** 猜你喜欢-商品类型 */
+export type GuessItem = {
+  /** 商品描述 */
+  desc: string
+  /** 商品折扣 */
+  discount: number
+  /** id */
+  id: string
+  /** 商品名称 */
+  name: string
+  /** 商品已下单数量 */
+  orderNum: number
+  /** 商品图片 */
+  picture: string
+  /** 商品价格 */
+  price: number
+}

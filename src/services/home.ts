@@ -1,4 +1,4 @@
-import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
+import type { BannerItem, CategoryItem, GuessItem, HotItem, PageResult } from '@/types/home'
 import { https } from '@/utils/https'
 
 /**
@@ -33,5 +33,16 @@ export const getHotPanelAPI = () => {
   return https<HotItem[]>({
     method: 'GET',
     url: '/home/hot/mutli',
+  })
+}
+/**
+ * 猜你喜欢-小程序
+ *  GET
+ * /home/goods/guessLike
+ */
+export const getGuessLikeAPI = () => {
+  return https<PageResult<GuessItem>>({
+    method: 'GET',
+    url: '/home/goods/guessLike',
   })
 }
