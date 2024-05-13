@@ -1,4 +1,4 @@
-import type { BannerItem } from '@/types/home'
+import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import { https } from '@/utils/https'
 
 /**
@@ -13,5 +13,25 @@ export const getHomeBannerApi = (distributionSite = 1) => {
     data: {
       distributionSite,
     },
+  })
+}
+
+// services/home.ts
+/**
+ * 首页-前台分类-小程序
+ */
+export const getHomeCategoryAPI = () => {
+  return https<CategoryItem[]>({
+    method: 'GET',
+    url: '/home/category/mutli',
+  })
+}
+/**
+ * 首页-热门推荐-小程序
+ */
+export const getHotPanelAPI = () => {
+  return https<HotItem[]>({
+    method: 'GET',
+    url: '/home/hot/mutli',
   })
 }
