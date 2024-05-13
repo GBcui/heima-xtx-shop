@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { useMemberStore } from '@/stores'
-import '@/utils/https.ts'
-
 const memberStore = useMemberStore()
-const getData = () => {
-  uni.request({
-    url: '/home/banner',
-    method: 'GET',
-    success: (res) => {
-      console.log(res)
+import { https } from '@/utils/https'
+const getData = async () => {
+  const res = await https(
+    {
+      url: '/home/banner',
+      method: 'GET',
     },
-  })
+    {
+      successShowToast: true,
+    },
+  )
 }
 </script>
 
