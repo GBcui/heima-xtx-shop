@@ -6,6 +6,7 @@ import { getHomeBannerApi, getHomeCategoryAPI, getHotPanelAPI } from '@/services
 import CustomNavbar from './componets/CustomNavbar.vue'
 import CategoryPanel from './componets/CategoryPanel.vue'
 import HotPanel from './componets/HotPanel.vue'
+import type { Guessintance } from '@/types/component'
 
 onLoad(() => {
   getHomeBanner()
@@ -27,15 +28,19 @@ const getHomeHotPanel = async () => {
   const res = await getHotPanelAPI()
   hotList.value = res.result
 }
+const GuessRef = ref<Guessintance>()
+const onScrolltolower = () => {
+  GuessRef.value?.getGuessLike()
+}
 </script>
 
 <template>
   <CustomNavbar />
-  <scroll-view scroll-y class="scrollView">
+  <scroll-view scroll-y class="scrollView" @scrolltolower="onScrolltolower">
     <XtxSwiper :list="list" />
     <CategoryPanel :list="categoryList" />
     <HotPanel :list="hotList"></HotPanel>
-    <XtxGuess></XtxGuess>
+    <XtxGuess ref="GuessRef"></XtxGuess>
   </scroll-view>
 </template>
 

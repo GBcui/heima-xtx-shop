@@ -1,3 +1,4 @@
+import type { PageParams } from '@/types/global'
 import type { BannerItem, CategoryItem, GuessItem, HotItem, PageResult } from '@/types/home'
 import { https } from '@/utils/https'
 
@@ -40,9 +41,10 @@ export const getHotPanelAPI = () => {
  *  GET
  * /home/goods/guessLike
  */
-export const getGuessLikeAPI = () => {
+export const getGuessLikeAPI = (data?: PageParams) => {
   return https<PageResult<GuessItem>>({
     method: 'GET',
     url: '/home/goods/guessLike',
+    data,
   })
 }

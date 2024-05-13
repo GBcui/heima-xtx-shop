@@ -1,16 +1,31 @@
 <script setup lang="ts">
-import type { PageResult, GuessItem } from '@/types/home'
+import type { GuessItem } from '@/types/home'
 import { getGuessLikeAPI } from '@/services/home'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, defineExpose } from 'vue'
+import type { PageParams } from '@/types/global'
 
-const likeList = ref<GuessItem[]>([])
-const getGuessLike = async () => {
-  const res = await getGuessLikeAPI()
-  likeList.value = res.result.items
-}
 onMounted(() => {
   getGuessLike()
 })
+const pageParams: Required<PageParams> = {
+  page: 33,
+  pageSize: 10,
+}
+const finish = ref(false)
+const likeList = ref<GuessItem[]>([])
+const getGuessLike = async () => {
+  if (finish.value) {
+    return uni.showToast({ title: '没有更多数据了~', icon: 'none' })
+  }
+  const res = await getGuessLikeAPI(pageParams)
+  likeList.value.push(...res.result.items)
+  if (pageParams.page < res.result.pages) {
+    pageParams.page++
+  } else {
+    finish.value = true
+  }
+}
+defineExpose({ getGuessLike })
 </script>
 
 <template>
@@ -33,7 +48,7 @@ onMounted(() => {
       </view>
     </navigator>
   </view>
-  <view class="loading-text"> 正在加载... </view>
+  <view class="loading-text"> {{ finish ? '没有更多数据了~' : '正在加载...' }} </view>
 </template>
 
 <style lang="scss">
