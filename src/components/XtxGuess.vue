@@ -8,7 +8,7 @@ onMounted(() => {
   getGuessLike()
 })
 const pageParams: Required<PageParams> = {
-  page: 33,
+  page: 1,
   pageSize: 10,
 }
 const finish = ref(false)
@@ -25,7 +25,13 @@ const getGuessLike = async () => {
     finish.value = true
   }
 }
-defineExpose({ getGuessLike })
+
+const resetData = () => {
+  likeList.value = []
+  pageParams.page = 1
+  finish.value = false
+}
+defineExpose({ getGuessLike, resetData })
 </script>
 
 <template>

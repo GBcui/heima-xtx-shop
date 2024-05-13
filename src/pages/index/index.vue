@@ -32,11 +32,32 @@ const GuessRef = ref<Guessintance>()
 const onScrolltolower = () => {
   GuessRef.value?.getGuessLike()
 }
+
+const isTrigger = ref<boolean>(false)
+
+const onRefresherrefresh = async () => {
+  isTrigger.value = true
+  GuessRef.value?.resetData()
+  await Promise.all([
+    getHomeBanner(),
+    getHomeCategory(),
+    getHomeHotPanel(),
+    GuessRef.value?.getGuessLike(),
+  ])
+  isTrigger.value = false
+}
 </script>
 
 <template>
   <CustomNavbar />
-  <scroll-view scroll-y class="scrollView" @scrolltolower="onScrolltolower">
+  <scroll-view
+    scroll-y
+    class="scrollView"
+    @scrolltolower="onScrolltolower"
+    refresher-enabled
+    @refresherrefresh="onRefresherrefresh"
+    :refresher-triggered="isTrigger"
+  >
     <XtxSwiper :list="list" />
     <CategoryPanel :list="categoryList" />
     <HotPanel :list="hotList"></HotPanel>
