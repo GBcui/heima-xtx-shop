@@ -13,7 +13,7 @@ defineProps<{ list: HotItem[] }>()
         <text class="title-text">{{ item.title }}</text>
         <text class="title-desc">{{ item.alt }}</text>
       </view>
-      <navigator hover-class="none" url="/pages/hot/hot" class="cards">
+      <navigator hover-class="none" :url="`/pages/hot/index?type=${item.type}`" class="cards">
         <image class="image" mode="aspectFit" v-for="i in item.pictures" :key="i" :src="i"></image>
       </navigator>
     </view>

@@ -4,8 +4,8 @@
 		"custom": {
 			// uni-ui 规则如下配置
 			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
-			 // 以 Xtx 开头的组件，在 components 目录中查找
-			 "^Xtx(.*)": "@/components/Xtx$1.vue"
+			// 以 Xtx 开头的组件，在 components 目录中查找
+			"^Xtx(.*)": "@/components/Xtx$1.vue"
 		}
 	},
 	"pages": [
@@ -41,8 +41,13 @@
 			"style": {
 				"navigationBarTitleText": "登录"
 			}
+		},
+		{
+			"path": "pages/hot/index",
+			"style": {
+				"navigationBarTitleText": "hot"
+			}
 		}
-	
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

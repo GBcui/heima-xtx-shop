@@ -1,5 +1,5 @@
-import type { PageParams } from '@/types/global'
-import type { BannerItem, CategoryItem, GuessItem, HotItem, PageResult } from '@/types/home'
+import type { PageParams, PageResult } from '@/types/global'
+import type { BannerItem, CategoryItem, GuessItem, HotItem } from '@/types/home'
 import { https } from '@/utils/https'
 
 /**
