@@ -7,12 +7,15 @@ import CustomNavbar from './componets/CustomNavbar.vue'
 import CategoryPanel from './componets/CategoryPanel.vue'
 import HotPanel from './componets/HotPanel.vue'
 import type { Guessintance } from '@/types/component'
+import PageSkeleton from './componets/PageSkeleton.vue'
+const isloding = ref(true)
 
-onLoad(() => {
-  getHomeBanner()
-  getHomeCategory()
-  getHomeHotPanel()
+onLoad(async () => {
+  isloding.value = true
+  await Promise.all([getHomeBanner(), getHomeCategory(), getHomeHotPanel()])
+  isloding.value = false
 })
+
 const list = ref<BannerItem[]>([])
 const getHomeBanner = async () => {
   const res = await getHomeBannerApi()
@@ -58,10 +61,13 @@ const onRefresherrefresh = async () => {
     @refresherrefresh="onRefresherrefresh"
     :refresher-triggered="isTrigger"
   >
-    <XtxSwiper :list="list" />
-    <CategoryPanel :list="categoryList" />
-    <HotPanel :list="hotList"></HotPanel>
-    <XtxGuess ref="GuessRef"></XtxGuess>
+    <PageSkeleton v-if="isloding" />
+    <template v-else>
+      <XtxSwiper :list="list" />
+      <CategoryPanel :list="categoryList" />
+      <HotPanel :list="hotList"></HotPanel>
+      <XtxGuess ref="GuessRef"></XtxGuess>
+    </template>
   </scroll-view>
 </template>
 
