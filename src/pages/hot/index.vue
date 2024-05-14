@@ -2,8 +2,7 @@
 import { defineProps, ref } from 'vue'
 import { getHotRecommendAPI } from '@/services/hot'
 import { onLoad } from '@dcloudio/uni-app'
-import type { PageParams } from '@/types/global'
-import type { HotResult } from '@/types/hot'
+import type { SubTypeItem } from '@/types/hot'
 // 热门推荐页 标题和url
 const hotMap = [
   { type: '1', title: '特惠推荐', url: '/hot/preference' },
@@ -17,46 +16,70 @@ const currentIndex = ref(0)
 const query = defineProps<{
   type: string
 }>()
-const pageParams: PageParams = {
-  page: 1,
-  pageSize: 10,
-}
+
 const hotcurrent = hotMap.find((item) => item.type === query.type)
 uni.setNavigationBarTitle({ title: hotcurrent!.title })
 
-const hotData = ref<HotResult>()
-const getHotRecommend = async () => {
-  const res = await getHotRecommendAPI(hotcurrent!.url)
-  hotData.value = res.result
+const hotData = ref<(SubTypeItem & { lasterFlag?: boolean })[]>([])
+const bannerPicture = ref<string>('')
+const getHotRecommend = async (obj?: object) => {
+  const res = await getHotRecommendAPI(hotcurrent!.url, obj)
+  if (obj && Object.keys(obj).length > 0) {
+    return res
+  }
+  bannerPicture.value = res.result.bannerPicture
+  hotData.value = res.result.subTypes
 }
 onLoad(() => {
   getHotRecommend()
 })
+
+const onScrolltolower = async () => {
+  const currentSubtype = hotData.value[currentIndex.value]
+
+  if (currentSubtype!.goodsItems.page < currentSubtype!.goodsItems.pages) {
+    currentSubtype!.goodsItems.page++
+  } else {
+    currentSubtype.lasterFlag = true
+    return uni.showToast({
+      title: '已经到底了~',
+      icon: 'none',
+    })
+  }
+  const res = await getHotRecommend({
+    page: currentSubtype?.goodsItems.page,
+    pageSize: currentSubtype?.goodsItems.pageSize,
+    subType: currentSubtype?.id,
+  })
+  const newCurrentSubtype = res!.result.subTypes[currentIndex.value]
+  currentSubtype?.goodsItems.items.push(...newCurrentSubtype.goodsItems.items)
+}
 </script>
 
 <template>
   <view class="viewport">
     <!-- 推荐封面图 -->
     <view class="cover">
-      <image :src="hotData?.bannerPicture"></image>
+      <image :src="bannerPicture"></image>
     </view>
     <!-- 推荐选项 -->
     <view class="tabs">
       <text
         :class="['text', { active: index == currentIndex }]"
         @tap="currentIndex = index"
-        v-for="(item, index) in hotData?.subTypes"
+        v-for="(item, index) in hotData"
         :key="item.id"
         >{{ item.title }}</text
       >
     </view>
     <!-- 推荐列表 -->
     <scroll-view
-      v-for="(item, index) in hotData?.subTypes"
+      v-for="(item, index) in hotData"
       :key="item.id"
       v-show="currentIndex == index"
       scroll-y
       class="scroll-view"
+      @scrolltolower="onScrolltolower"
     >
       <view class="goods">
         <navigator
@@ -74,7 +97,7 @@ onLoad(() => {
           </view>
         </navigator>
       </view>
-      <view class="loading-text">正在加载...</view>
+      <view class="loading-text">{{ item.lasterFlag ? '已经到底了~' : '正在加载...' }} </view>
     </scroll-view>
   </view>
 </template>
