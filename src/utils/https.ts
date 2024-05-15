@@ -7,7 +7,10 @@ const memberStore = useMemberStore()
 // 尝试获取用户token
 const token = memberStore.profile?.token
 interface httpConfig {
-  successShowToast: boolean
+  //是否显示成功提示msg
+  successShowToast?: boolean
+  //指定成功提示词
+  successMsg?: string
 }
 
 // 定义http请求拦截器
@@ -58,10 +61,10 @@ const httpsInterceptor = <T>(optins: UniApp.RequestOptions, config?: httpConfig)
         if (res.statusCode >= 200 && res.statusCode < 300) {
           // 响应成功，将数据返回
           resolve(res.data as Data<T>)
-          if (config?.successShowToast) {
+          if (config?.successShowToast || !!config?.successMsg) {
             uni.showToast({
               icon: 'none',
-              title: (res.data as Data<T>).msg,
+              title: config?.successMsg || (res.data as Data<T>).msg,
             })
           }
         } else if (res.statusCode === 401) {

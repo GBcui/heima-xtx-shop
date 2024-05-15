@@ -6,20 +6,16 @@ type loginParms = {
   iv: string
 }
 
-type loginRes = {
+export type loginRes = {
+  account: string
+  avatar: string
+  id: string
+  mobile: string
+  nickname: string
   token: string
-  userInfo: {
-    id: string
-    nickName: string
-    avatarUrl: string
-    gender: number
-    city: string
-    country: string
-    province: string
-  }
 }
 export const postLoginWXMin = (data: loginParms) => {
-  return https({
+  return https<loginRes>({
     url: '/login/wxMin',
     data,
     method: 'POST',
@@ -29,7 +25,7 @@ type simpleLoginParms = {
   cphoneNumberode: string
 }
 export const postSimpleLoginWXMin = (phoneNumber: string) => {
-  return https(
+  return https<loginRes>(
     {
       url: '/login/wxMin/simple',
       data: {
@@ -38,7 +34,7 @@ export const postSimpleLoginWXMin = (phoneNumber: string) => {
       method: 'POST',
     },
     {
-      successShowToast: true,
+      successMsg: '登录成功',
     },
   )
 }

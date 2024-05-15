@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app'
 import { postLoginWXMin, postSimpleLoginWXMin } from '@/services/login'
+import { useMemberStore } from '@/stores'
 
 let code = ''
 onLoad(async () => {
@@ -15,11 +16,19 @@ const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
     encryptedData: ev.detail.encryptedData!,
     iv: ev.detail.iv!,
   })
-  console.log(res)
+  const memberStore = useMemberStore()
+  memberStore.setProfile(res.result)
+  setTimeout(() => {
+    uni.switchTab({ url: '/pages/my/my' })
+  }, 500)
 }
 const onlogin = async () => {
   const res = await postSimpleLoginWXMin('13800000000')
-  console.log(res)
+  const memberStore = useMemberStore()
+  memberStore.setProfile(res.result)
+  setTimeout(() => {
+    uni.switchTab({ url: '/pages/my/my' })
+  }, 500)
 }
 </script>
 
