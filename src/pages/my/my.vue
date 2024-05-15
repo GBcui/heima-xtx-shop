@@ -15,6 +15,12 @@ const orderTypes = [
   { type: 4, text: '待评价', icon: 'icon-comment' },
 ]
 const { guessRef, onScrolltolower } = useGuessList()
+
+const onLogin = () => {
+  uni.navigateTo({
+    url: '/pages/login/login',
+  })
+}
 </script>
 
 <template>
@@ -50,7 +56,7 @@ const { guessRef, onScrolltolower } = useGuessList()
             未登录
           </navigator>
           <view class="extra">
-            <text class="tips">点击登录账号</text>
+            <text class="tips" @tap="onLogin">点击登录账号</text>
           </view>
         </view>
       </view>
