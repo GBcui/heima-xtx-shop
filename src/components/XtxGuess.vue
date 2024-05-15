@@ -31,7 +31,7 @@ const resetData = () => {
   pageParams.page = 1
   finish.value = false
 }
-defineExpose({ getGuessLike, resetData })
+defineExpose({ getMore: getGuessLike, resetData })
 </script>
 
 <template>

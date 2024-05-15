@@ -6,10 +6,9 @@ import { getHomeBannerApi, getHomeCategoryAPI, getHotPanelAPI } from '@/services
 import CustomNavbar from './componets/CustomNavbar.vue'
 import CategoryPanel from './componets/CategoryPanel.vue'
 import HotPanel from './componets/HotPanel.vue'
-import type { Guessintance } from '@/types/component'
 import PageSkeleton from './componets/PageSkeleton.vue'
 const isloding = ref(true)
-
+import { useGuessList } from '@/hooks/index'
 onLoad(async () => {
   isloding.value = true
   await Promise.all([getHomeBanner(), getHomeCategory(), getHomeHotPanel()])
@@ -31,21 +30,19 @@ const getHomeHotPanel = async () => {
   const res = await getHotPanelAPI()
   hotList.value = res.result
 }
-const GuessRef = ref<Guessintance>()
-const onScrolltolower = () => {
-  GuessRef.value?.getGuessLike()
-}
+
+const { guessRef, onScrolltolower } = useGuessList()
 
 const isTrigger = ref<boolean>(false)
 
 const onRefresherrefresh = async () => {
   isTrigger.value = true
-  GuessRef.value?.resetData()
+  guessRef.value?.resetData()
   await Promise.all([
     getHomeBanner(),
     getHomeCategory(),
     getHomeHotPanel(),
-    GuessRef.value?.getGuessLike(),
+    guessRef.value?.getMore(),
   ])
   isTrigger.value = false
 }
@@ -66,7 +63,7 @@ const onRefresherrefresh = async () => {
       <XtxSwiper :list="list" />
       <CategoryPanel :list="categoryList" />
       <HotPanel :list="hotList"></HotPanel>
-      <XtxGuess ref="GuessRef"></XtxGuess>
+      <XtxGuess ref="guessRef"></XtxGuess>
     </template>
   </scroll-view>
 </template>
