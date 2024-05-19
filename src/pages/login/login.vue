@@ -19,7 +19,8 @@ const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
   const memberStore = useMemberStore()
   memberStore.setProfile(res.result)
   setTimeout(() => {
-    uni.switchTab({ url: '/pages/my/my' })
+    // uni.switchTab({ url: '/pages/my/my' })
+    uni.navigateBack()
   }, 500)
 }
 const onlogin = async () => {
