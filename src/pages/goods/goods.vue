@@ -11,13 +11,20 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
 const query = defineProps<{
   id: string
 }>()
-
+enum ModeSKU {
+  Both = 1,
+  cart = 2,
+  buy = 3,
+}
 const isShowSKU = ref(false)
+const mode = ref<ModeSKU>(ModeSKU.Both)
 const goodsInfo = ref({} as SkuPopupLocaldata)
 
-const openSkuPopup = () => {
+const openSkuPopup = (falg: ModeSKU) => {
   isShowSKU.value = true
+  mode.value = falg
 }
+
 const goodsList = ref<GoodsResult>()
 const getGoodsById = async () => {
   const res = await getGoodsByIdAPI(query.id)
@@ -44,8 +51,6 @@ const getGoodsById = async () => {
       }
     }),
   }
-
-  console.log(goodsInfo, 'goodsInfot')
 }
 onLoad(() => {
   getGoodsById()
@@ -82,6 +87,9 @@ const openPopup = (name: typeof popupName.value) => {
     ref="skuPopup"
     v-model="isShowSKU"
     :localdata="goodsInfo"
+    :mode="mode"
+    add-cart-background-color="#FFA868"
+    buy-now-background-color="#27BA9B"
   ></vk-data-goods-sku-popup>
   <scroll-view scroll-y class="viewport">
     <!-- 基本信息 -->
@@ -114,7 +122,7 @@ const openPopup = (name: typeof popupName.value) => {
       <view class="action">
         <view class="item arrow">
           <text class="label">选择</text>
-          <text class="text ellipsis" @tap="openSkuPopup"> 请选择商品规格 </text>
+          <text class="text ellipsis" @tap="openSkuPopup(ModeSKU.Both)"> 请选择商品规格 </text>
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
@@ -186,8 +194,8 @@ const openPopup = (name: typeof popupName.value) => {
       </navigator>
     </view>
     <view class="buttons">
-      <view class="addcart"> 加入购物车 </view>
-      <view class="buynow"> 立即购买 </view>
+      <view class="addcart" @tap="openSkuPopup(ModeSKU.cart)"> 加入购物车 </view>
+      <view class="buynow" @tap="openSkuPopup(ModeSKU.buy)"> 立即购买 </view>
     </view>
   </view>
   <uni-popup ref="popup" type="bottom" background-color="#fff">
