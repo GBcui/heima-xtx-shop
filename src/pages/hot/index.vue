@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue'
+import { ref } from 'vue'
 import { getHotRecommendAPI } from '@/services/hot'
 import { onLoad } from '@dcloudio/uni-app'
 import type { SubTypeItem } from '@/types/hot'

@@ -1,21 +1,51 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import { getGoodsByIdAPI } from '@/services/goods'
 import type { GoodsResult } from '@/types/goods'
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import AddressPanel from './component/AddressPanel.vue'
 import ServicePanel from './component/ServicePanel.vue'
+import type { SkuPopupLocaldata } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup.d.ts'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const query = defineProps<{
   id: string
 }>()
 
+const isShowSKU = ref(false)
+const goodsInfo = ref({} as SkuPopupLocaldata)
+
+const openSkuPopup = () => {
+  isShowSKU.value = true
+}
 const goodsList = ref<GoodsResult>()
 const getGoodsById = async () => {
   const res = await getGoodsByIdAPI(query.id)
   goodsList.value = res.result
+  goodsInfo.value = {
+    _id: res.result.id,
+    name: res.result.name,
+    goods_thumb: res.result.mainPictures[0],
+    spec_list: res.result.specs.map((item) => {
+      return {
+        name: item.name,
+        list: item.values,
+      }
+    }),
+    sku_list: res.result.skus.map((item) => {
+      return {
+        _id: item.id,
+        goods_id: res.result.id,
+        goods_name: res.result.name,
+        image: item.picture,
+        price: item.price * 100,
+        sku_name_arr: item.specs.map((v) => v.valueName),
+        stock: item.inventory,
+      }
+    }),
+  }
+
+  console.log(goodsInfo, 'goodsInfot')
 }
 onLoad(() => {
   getGoodsById()
@@ -48,6 +78,11 @@ const openPopup = (name: typeof popupName.value) => {
 </script>
 
 <template>
+  <vk-data-goods-sku-popup
+    ref="skuPopup"
+    v-model="isShowSKU"
+    :localdata="goodsInfo"
+  ></vk-data-goods-sku-popup>
   <scroll-view scroll-y class="viewport">
     <!-- 基本信息 -->
     <view class="goods">
@@ -79,7 +114,7 @@ const openPopup = (name: typeof popupName.value) => {
       <view class="action">
         <view class="item arrow">
           <text class="label">选择</text>
-          <text class="text ellipsis"> 请选择商品规格 </text>
+          <text class="text ellipsis" @tap="openSkuPopup"> 请选择商品规格 </text>
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>

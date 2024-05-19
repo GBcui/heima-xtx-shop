@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { HotItem } from '@/types/home'
-import { defineProps } from 'vue'
 
 defineProps<{ list: HotItem[] }>()
 </script>

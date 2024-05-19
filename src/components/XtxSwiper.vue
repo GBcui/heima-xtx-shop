@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { BannerItem } from '@/types/home'
-import { ref, defineProps } from 'vue'
+import { ref } from 'vue'
 
 const activeIndex = ref(0)
 

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { CategoryItem } from '@/types/home'
-import { defineProps } from 'vue'
 defineProps<{ list: CategoryItem[] }>()
 </script>
 

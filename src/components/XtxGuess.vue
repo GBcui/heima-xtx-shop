@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GuessItem } from '@/types/home'
 import { getGuessLikeAPI } from '@/services/home'
-import { ref, onMounted, defineExpose } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { PageParams } from '@/types/global'
 
 onMounted(() => {
@@ -44,7 +44,7 @@ defineExpose({ getMore: getGuessLike, resetData })
       class="guess-item"
       v-for="item in likeList"
       :key="item.id"
-      :url="`/pages/goods/goods?${item.id}`"
+      :url="`/pages/goods/goods?id=${item.id}`"
     >
       <image class="image" mode="aspectFill" :src="item.picture"></image>
       <view class="name"> {{ item.name }} </view>
