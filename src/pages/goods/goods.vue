@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { getGoodsByIdAPI } from '@/services/goods'
+import { postMemberCartAPI } from '@/services/cart'
 import type { GoodsResult } from '@/types/goods'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import AddressPanel from './component/AddressPanel.vue'
 import ServicePanel from './component/ServicePanel.vue'
-import type { SkuPopupLocaldata } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup.d.ts'
+import type {
+  SkuPopupEvent,
+  SkuPopupInstanceType,
+  SkuPopupLocaldata,
+} from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup.d.ts'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const query = defineProps<{
@@ -80,6 +85,18 @@ const openPopup = (name: typeof popupName.value) => {
   // 打开弹出层
   popup.value?.open()
 }
+const skuPopup = ref<SkuPopupInstanceType>()
+
+const selectArr = computed(() => {
+  return skuPopup.value?.selectArr?.join(' ').trim() || '请选择商品规格'
+})
+
+// 加入购物车事件
+const onAddCart = async (ev: SkuPopupEvent) => {
+  await postMemberCartAPI({ skuId: ev._id, count: ev.buy_num })
+  uni.showToast({ title: '添加成功' })
+  isShowSKU.value = false
+}
 </script>
 
 <template>
@@ -87,9 +104,15 @@ const openPopup = (name: typeof popupName.value) => {
     ref="skuPopup"
     v-model="isShowSKU"
     :localdata="goodsInfo"
+    @add-cart="onAddCart"
     :mode="mode"
     add-cart-background-color="#FFA868"
     buy-now-background-color="#27BA9B"
+    :actived-style="{
+      color: '#27BA9B',
+      borderColor: '#27BA9B',
+      backgrounndColor: '#E9F8F5',
+    }"
   ></vk-data-goods-sku-popup>
   <scroll-view scroll-y class="viewport">
     <!-- 基本信息 -->
@@ -122,7 +145,7 @@ const openPopup = (name: typeof popupName.value) => {
       <view class="action">
         <view class="item arrow">
           <text class="label">选择</text>
-          <text class="text ellipsis" @tap="openSkuPopup(ModeSKU.Both)"> 请选择商品规格 </text>
+          <text class="text ellipsis" @tap="openSkuPopup(ModeSKU.Both)"> {{ selectArr }} </text>
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
