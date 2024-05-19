@@ -11,6 +11,9 @@ import type { CartItem } from '@/types/cart'
 import { onShow } from '@dcloudio/uni-app'
 import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box'
 import { computed } from 'vue'
+import { useGuessList } from '@/hooks/index'
+
+const { guessRef, onScrolltolower } = useGuessList()
 const memberStore = useMemberStore()
 const cartList = ref<CartItem[]>([])
 const getMemberCart = async () => {
@@ -101,7 +104,7 @@ const gotoPayment = () => {
 </script>
 
 <template>
-  <scroll-view scroll-y class="scroll-view">
+  <scroll-view scroll-y class="scroll-view" @scrolltolower="onScrolltolower">
     <!-- 已登录: 显示购物车 -->
     <template v-if="memberStore.profile">
       <!-- 购物车列表 -->
