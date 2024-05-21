@@ -311,8 +311,8 @@ const onsubmit = () => {
         <!-- 其他订单状态:按需展示按钮 -->
         <template v-else>
           <navigator
-            class="button secondary"
-            :url="`/pagesOrder/create/create?orderId=${query.id}`"
+            class="button"
+            :url="`/pageOrder/create/create?orderId=${query.id}`"
             hover-class="none"
           >
             再次购买

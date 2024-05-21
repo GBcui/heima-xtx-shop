@@ -78,7 +78,7 @@ const onLogin = () => {
           v-for="item in orderTypes"
           :key="item.type"
           :class="item.icon"
-          :url="`/pagesOrder/list/list?type=${item.type}`"
+          :url="`/pageOrder/list/list?type=${item.type}`"
           class="navigator"
           hover-class="none"
         >
