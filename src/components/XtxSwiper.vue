@@ -42,7 +42,7 @@ defineProps<{
 }
 /* 轮播图 */
 .carousel {
-  height: 100%;
+  height: 350rpx;
   position: relative;
   overflow: hidden;
   transform: translateY(0);
@@ -66,7 +66,7 @@ defineProps<{
     }
   }
   .navigator,
-  .image {
+  image {
     width: 100%;
     height: 100%;
   }

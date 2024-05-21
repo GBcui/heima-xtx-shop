@@ -3,11 +3,11 @@ import { onLoad } from '@dcloudio/uni-app'
 import { postLoginWXMin, postSimpleLoginWXMin } from '@/services/login'
 import { useMemberStore } from '@/stores'
 
+// #ifdef MP-WEIXIN
 let code = ''
 onLoad(async () => {
   const res = await uni.login()
   code = res.code
-  console.log(res)
 })
 const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
   //个人开发者 无法使用GetPhoneNumber 接口获取手机号
@@ -23,6 +23,8 @@ const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
     uni.navigateBack()
   }, 500)
 }
+// #endif
+
 const onlogin = async () => {
   const res = await postSimpleLoginWXMin('13800000000')
   const memberStore = useMemberStore()
@@ -41,16 +43,20 @@ const onlogin = async () => {
       ></image>
     </view>
     <view class="login">
+      <!-- #ifdef H5 -->
       <!-- 网页端表单登录 -->
-      <!-- <input class="input" type="text" placeholder="请输入用户名/手机号码" /> -->
-      <!-- <input class="input" type="text" password placeholder="请输入密码" /> -->
-      <!-- <button class="button phone">登录</button> -->
+      <input class="input" type="text" placeholder="请输入用户名/手机号码" />
+      <input class="input" type="text" password placeholder="请输入密码" />
+      <button class="button phone">登录</button>
+      <!-- #endif -->
 
       <!-- 小程序端授权登录 -->
+      <!-- #ifdef MP-WEIXIN -->
       <button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetPhoneNumber">
         <text class="icon icon-phone"></text>
         手机号快捷登录
       </button>
+      <!-- #endif -->
       <view class="extra">
         <view class="caption">
           <text>其他登录方式</text>
