@@ -99,7 +99,7 @@ const gotoPayment = () => {
     })
   }
   // 跳转到结算页
-  uni.navigateTo({ url: '/pagesOrder/create/create' })
+  uni.navigateTo({ url: '/pageOrder/create/create' })
 }
 </script>
 

@@ -11,6 +11,9 @@ import type {
   SkuPopupInstanceType,
   SkuPopupLocaldata,
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup.d.ts'
+import { getMemberAddressAPI } from '@/services/address'
+import { useAddressStore } from '@/stores'
+import type { AddressItem } from '@/types/address'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const query = defineProps<{
@@ -59,6 +62,7 @@ const getGoodsById = async () => {
 }
 onLoad(() => {
   getGoodsById()
+  getMemberAddressData()
 })
 const currentIndex = ref(1)
 const onchange: UniHelper.SwiperOnChange = (e: any) => {
@@ -70,6 +74,18 @@ const onTapImg = (url: string) => {
     urls: goodsList.value!.mainPictures,
   })
 }
+
+const defAddress = ref()
+const addressList = ref<AddressItem[]>([])
+const getMemberAddressData = async () => {
+  const res = await getMemberAddressAPI()
+  addressList.value = res.result
+  defAddress.value = res.result.find((item) => item.isDefault) || {}
+}
+const AddressStore = useAddressStore()
+const isDefaultAddress = computed(() => {
+  return AddressStore.selectedAddress || defAddress.value
+})
 
 // uni-ui 弹出层组件 ref
 const popup = ref<{
@@ -97,6 +113,12 @@ const onAddCart = async (ev: SkuPopupEvent) => {
   uni.showToast({ title: '添加成功' })
   isShowSKU.value = false
 }
+// 立即购买事件
+const onByNow = async (ev: SkuPopupEvent) => {
+  uni.navigateTo({
+    url: `/pageOrder/create/create?skuId=${ev._id}&buy_num= ${ev.buy_num}&addressId=${isDefaultAddress.value.id}`,
+  })
+}
 </script>
 
 <template>
@@ -105,6 +127,7 @@ const onAddCart = async (ev: SkuPopupEvent) => {
     v-model="isShowSKU"
     :localdata="goodsInfo"
     @add-cart="onAddCart"
+    @buy-now="onByNow"
     :mode="mode"
     add-cart-background-color="#FFA868"
     buy-now-background-color="#27BA9B"
@@ -130,7 +153,6 @@ const onAddCart = async (ev: SkuPopupEvent) => {
           <text class="total">{{ goodsList?.mainPictures.length || currentIndex }}</text>
         </view>
       </view>
-
       <!-- 商品简介 -->
       <view class="meta">
         <view class="price">
@@ -149,7 +171,10 @@ const onAddCart = async (ev: SkuPopupEvent) => {
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
-          <text class="text ellipsis"> 请选择收获地址 </text>
+          <text class="text ellipsis" v-if="isDefaultAddress">
+            {{ isDefaultAddress?.fullLocation }} {{ isDefaultAddress.address }}
+          </text>
+          <text class="text ellipsis" v-else> 请选择收获地址 </text>
         </view>
         <view @tap="openPopup('service')" class="item arrow">
           <text class="label">服务</text>
@@ -222,7 +247,7 @@ const onAddCart = async (ev: SkuPopupEvent) => {
     </view>
   </view>
   <uni-popup ref="popup" type="bottom" background-color="#fff">
-    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" />
+    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" :list="addressList" />
     <ServicePanel v-if="popupName === 'service'" @close="popup?.close()" />
   </uni-popup>
 </template>
