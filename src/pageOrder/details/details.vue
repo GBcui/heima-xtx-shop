@@ -43,6 +43,7 @@ const query = defineProps<{
   id: string
 }>()
 
+// #ifdef MP-WEIXIN
 const pages = getCurrentPages()
 // 基于小程序的 Page 实例类型扩展 uni-app 的 Page
 type PageInstance = Page.PageInstance & WechatMiniprogram.Page.InstanceMethods<any>
@@ -76,6 +77,7 @@ onReady(() => {
     endScrollOffset: 50,
   })
 })
+// #endif
 
 // 获取订单详情
 const order = ref<OrderResult>()
